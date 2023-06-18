@@ -66,13 +66,21 @@
               $balance = 0;
             @endphp
             @foreach ($this->household->transactions->sortBy('date') as $index => $transaction)
-              <tr class="border-b hover:bg-gray-200">
-                <td class="text-start p-2">{{ $transaction['id'] }}</td>
-                <td class="text-start">{{ $transaction['title'] }}</td>
-                <td class="text-end">{{ $transaction['debit'] == 0 ? '-' : $transaction['debit'] }}</td>
-                <td class="text-end">{{ $transaction['credit'] == 0 ? '-' : $transaction['credit'] }}</td>
-                <td class="text-end">{{ $transaction['date']->format('m-d-Y') }}</td>
-                <td class="text-end">{{ $balance += $transaction['debit'] - $transaction['credit'] }}</td>
+              @php
+                $balance = $balance + $transaction['debit'] - $transaction['credit'];
+              @endphp
+              <tr class="hover:bg-gray-200">
+                <td class="border p-2 text-start">{{ $transaction['id'] }}</td>
+                <td class="border p-2 text-start">{{ $transaction['title'] }}</td>
+                <td class="border p-2 text-end">
+                  {{ $transaction['debit'] == 0 ? '-' : number_format($transaction['debit'], 2) }}
+                </td>
+                <td class="border p-2 text-end">
+                  {{ $transaction['credit'] == 0 ? '-' : number_format($transaction['credit'], 2) }}
+                </td>
+                <td class="border p-2 text-end">{{ $transaction['date']->format('m-d-Y') }}</td>
+                <td class="border p-2 text-end">{{ $balance == 0 ? '-' : number_format($balance, 2) }}
+                </td>
               </tr>
             @endforeach
           </tbody>

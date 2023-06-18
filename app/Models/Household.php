@@ -54,7 +54,7 @@ class Household extends Model
             ->get()->map(function ($payable) {
                 return [
                     'id' => $payable->id,
-                    'title' => $payable->item->title,
+                    'title' => $payable->due_at->format('M Y') . ' ' . $payable->item->title,
                     'debit' => $payable->amount,
                     'credit' => 0,
                     'date' => $payable->due_at,
@@ -84,11 +84,11 @@ class Household extends Model
         $asOf = $asOf ?? now();
         $item = Item::where('title', 'Monthly Due')->first();
         $query->addSelect([
-            'total_payable'=> Payable::selectRaw('sum(amount)')
+            'total_payable' => Payable::selectRaw('sum(amount)')
                 ->whereColumn('household_id', 'households.id')
                 ->where('item_id', $item->id)
                 ->where('due_at', '<', $asOf),
-            'total_payment'=> Payment::selectRaw('sum(amount)')
+            'total_payment' => Payment::selectRaw('sum(amount)')
                 ->whereColumn('household_id', 'households.id')
                 ->where('item_id', $item->id)
         ])->havingRaw('total_payable <= total_payment');
@@ -99,13 +99,13 @@ class Household extends Model
         $asOf = $asOf ?? now();
         $item = Item::where('title', 'Monthly Due')->first();
         $query->addSelect([
-            'total_payable'=> Payable::selectRaw('sum(amount)')
+            'total_payable' => Payable::selectRaw('sum(amount)')
                 ->whereColumn('household_id', 'households.id')
                 ->where('item_id', $item->id)
                 ->where('due_at', '<', $asOf),
-            'total_payment'=> Payment::selectRaw('sum(amount)')
+            'total_payment' => Payment::selectRaw('sum(amount)')
                 ->whereColumn('household_id', 'households.id')
                 ->where('item_id', $item->id)
-        ])->havingRaw('total_payable > total_payment');
+        ])->havingRaw('ifnull(total_payable,0) > ifnull(total_payment,0)');
     }
 }
