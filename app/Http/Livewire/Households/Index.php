@@ -32,6 +32,8 @@ class Index extends Component
     public function getHouseholdsProperty()
     {
         return Household::query()
+            ->withSum('payments as total_payments', 'amount')
+            ->withSum('payables as total_payables', 'amount')
             ->when(!empty($this->search), function ($query) {
                 $query->where('title', 'like',  $this->search . '%')
                     ->orWHere('street', 'like', '%' . $this->search . '%')

@@ -9,7 +9,7 @@
     <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
       <div class="mb-4 flex items-center justify-between">
         <input
-          class="rounded-full bg-gray-200 py-2 px-4 text-gray-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="rounded-full bg-gray-200 px-4 py-2 text-gray-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Search..."
           type="text"
           wire:model="search"
@@ -21,7 +21,7 @@
             value="{{ __('Filter') }}:"
           />
           <select
-            class="rounded-full bg-gray-200 py-2 px-4 text-gray-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="rounded-full bg-gray-200 px-4 py-2 text-gray-700 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             id="filter"
             name="filter"
             wire:model.debounce.500ms="filter"
@@ -38,7 +38,7 @@
           <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
               <div class="overflow-hidden">
-                <table class="min-w-full text-left text-sm font-light">
+                <table class="min-w-full text-left text-sm font-light border">
                   <thead class="border-b font-medium">
                     <tr>
                       <th
@@ -61,6 +61,18 @@
                         class="px-6 py-4"
                         scope="col"
                       >Good Standing</th>
+                      <th
+                        class="px-6 py-4"
+                        scope="col"
+                      >Total Payables</th>
+                      <th
+                        class="px-6 py-4"
+                        scope="col"
+                      >Total Payments</th>
+                      <th
+                        class="px-6 py-4"
+                        scope="col"
+                      >Balance</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -89,7 +101,14 @@
                             </span>
                           @endif
                         </td>
-                        <td>
+                        <td class="text-end">
+                          {{ number_format($household->total_payables, 2) }}
+                        </td>
+                        <td class="text-end">
+                          {{ number_format($household->total_payments, 2) }}
+                        </td>
+                        <td class="text-end">{{ number_format($household->total_payables-$household->total_payments, 2) }}</td>
+                        <td class="p-2">
                           <a
                             class="font-bold text-green-600 hover:text-green-900"
                             href="{{ route('payments.create', [
